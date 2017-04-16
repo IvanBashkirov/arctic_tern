@@ -15,6 +15,7 @@ Rails.application.configure do
   #Set defaul url for mailer
   config.action_mailer.default_url_options = {  :host => 'localhost:3000'}
 
+  config.action_mailer.delivery_method = :sendmail
 
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?
