@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Wikis</h1>
+
+<% @wikis.each do |wiki| %>
+<p><%= wiki.title %></p>
+<%= link_to 'Show', wiki %>
+<%= link_to 'Edit', edit_wiki_path(wiki) %>
+<%= link_to 'Destroy', wiki, method: :delete, data: { confirm: 'Are you sure?' } %>
+<br>
+<br>
+<% end %>
+
+<%= link_to 'New Wiki', new_wiki_path %>
