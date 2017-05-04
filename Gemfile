@@ -22,6 +22,7 @@ gem 'coffee-rails', '~> 4.2'
 # gem 'therubyracer', platforms: :ruby
  gem 'bootstrap-sass'
  gem 'figaro'
+ gem 'pundit'
 
 
 # Use jquery as the JavaScript library

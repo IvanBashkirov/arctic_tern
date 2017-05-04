@@ -6,4 +6,11 @@ class User < ApplicationRecord
          :confirmable
 
   has_many :wikis
+  after_initialize :init
+
+  def init
+    self.role ||= :member
+  end
+
+  enum role: [:member, :admin]
 end

@@ -3,5 +3,7 @@
 <%= @wiki.title %>
 <%= @wiki.body %>
 
+<% if policy(@wiki).edit? %>
 <%= link_to 'Edit', edit_wiki_path(@wiki) %> |
+<% end %>
 <%= link_to 'Back', wikis_path %>
