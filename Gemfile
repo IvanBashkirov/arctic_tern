@@ -40,6 +40,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'bcrypt', '~> 3.1.7'
 # Authenitaction
 gem 'devise'
+# charging moneyz
+gem 'stripe'
 
 
 

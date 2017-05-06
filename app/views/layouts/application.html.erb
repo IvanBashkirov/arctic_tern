@@ -19,6 +19,9 @@
     <% end %>
     - <%= link_to 'Wikis', wikis_path %>
     - <%= link_to 'Home', root_path %>
+    <% if current_user.premium? %>
+      - PREMIUM ACCOUNT
+      <% end %>
 
     <% if flash[:notice] %>
     <div class="alert alert-success">
