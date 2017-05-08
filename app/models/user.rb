@@ -6,33 +6,19 @@ class User < ApplicationRecord
          :confirmable
 
   has_many :wikis
-  after_create :assign_role, :subscribe_to_basic_plan
+  before_create :assign_role
 
-  def assign_role
-    self.role ||= :basic
-    self.save
-  end
+
 
   enum role: [:basic, :premium, :admin]
   private
 
-  def subscribe_to_basic_plan
-    puts "email"
-    puts self.email
-    customer = Stripe::Customer.create(
-      email: self.email
-    )
-    puts "customer"
-    puts customer
-    self.customer_id = customer.id
-    self.save
-    puts "self customer_id"
-    puts self.customer_id
-    Stripe::Subscription.create(
-      customer: customer.id,
-      plan: "basic-yearly"
-    )
+  def assign_role
+    self.role ||= :basic
   end
+
+
+
 
 
 end
