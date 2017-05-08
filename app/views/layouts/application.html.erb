@@ -11,18 +11,28 @@
   <body>
 
     <% if user_signed_in? %>
-      Signed in as: <strong><%= current_user.email %></strong> |
-      <%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %> - <%= link_to "Sign Out", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-      <% if current_user.premium? %>
-      - PREMIUM ACCOUNT
-      <% end %>
-    <% else %>
-      <%= link_to "Sign Up", new_user_registration_path, :class => 'navbar-link'  %> -
-      <%= link_to "Sign In", new_user_session_path, :class => 'navbar-link'  %>
+    Signed in as:
+    <strong><%= current_user.email %></strong>
+    |
+    <%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %>
+    -
+    <%= link_to "Sign Out", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+    -
+    <%= link_to "Subscription", charges_change_subscription_path, :class => 'navbar-link' %>
+    <% if current_user.premium? %>
+    - PREMIUM ACCOUNT
+  <% else %>
+    - BASIC ACCOUNT
     <% end %>
-    - <%= link_to 'Wikis', wikis_path %>
-    - <%= link_to 'Home', root_path %>
-
+  <% else %>
+    <%= link_to "Sign Up", new_user_registration_path, :class => 'navbar-link'  %>
+    -
+    <%= link_to "Sign In", new_user_session_path, :class => 'navbar-link'  %>
+    <% end %>
+    -
+    <%= link_to 'Wikis', wikis_path %>
+    -
+    <%= link_to 'Home', root_path %>
 
     <% if flash[:notice] %>
     <div class="alert alert-success">

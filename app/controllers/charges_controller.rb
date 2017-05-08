@@ -1,9 +1,13 @@
 class ChargesController < ApplicationController
   before_action :authorize_charge
 
-  def create_upgrade
-    # Creates a Stripe Customer object, for associating
-    # with the charge
+  def switch_to_premium
+
+    if current_user.premium?
+      flash[:alert] = "You are already on a premium plan"
+      redirect_to change_subscription_path
+    end
+
     customer = Stripe::Customer.retrieve(current_user.customer_id)
     customer.source = params[:stripeToken]
     customer.save
@@ -11,19 +15,36 @@ class ChargesController < ApplicationController
     subscription.plan = "premium-yearly"
     subscription.save
 
-    flash[:notice] = "Thanks for all the money, #{current_user.email}! Feel free to pay me again."
+    flash[:notice] = 'You succesfully upgraded your plan to "Premium"'
     current_user.premium!
     redirect_to root_path # or wherever
 
-    # Stripe will send back CardErrors, with friendly messages
-    # when something goes wrong.
-    # This `rescue block` catches and displays those errors.
   rescue Stripe::CardError => e
       flash[:alert] = e.message
-      redirect_to new_upgrade_path
+      redirect_to change_subscription_path
     end
 
-  def new_upgrade
+
+  def switch_to_basic
+
+    if current_user.basic?
+      flash[:alert] = "You are already on a basic plan"
+      redirect_to change_subscription_path
+    end
+    customer = Stripe::Customer.retrieve(current_user.customer_id)
+    customer.sources.each{|card| card.delete} # delete all cards
+    customer.save
+    subscription = customer.subscriptions.first
+    subscription.plan = "basic-yearly"
+    subscription.save
+
+    flash[:notice] = 'You succesfully downgraded your plan to "Basic"'
+    current_user.basic!
+    redirect_to root_path # or wherever
+
+    end
+
+  def change_subscription
     @stripe_btn_data = {
       key: Rails.configuration.stripe[:publishable_key].to_s,
       description: "BigMoney Membership - #{current_user.email}",
@@ -34,6 +55,6 @@ class ChargesController < ApplicationController
   private
 
   def authorize_charge
-    display_not_authorized unless current_user.present?
+    display_not_authorized unless user_signed_in?
   end
 end

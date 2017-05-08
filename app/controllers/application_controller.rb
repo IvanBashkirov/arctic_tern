@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
   def display_not_authorized
     flash[:alert] = 'You are not authorized to do that'
-    if current_user
+    if user_signed_in?
       redirect_to(request.referrer || root_path)
     else
       redirect_to new_user_session_path
