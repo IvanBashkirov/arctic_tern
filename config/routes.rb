@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :charges, only: [:new, :create]
+  post 'charges/create_upgrade'
+  get 'charges/new_upgrade'
   resources :wikis
 
   root 'welcome#index'

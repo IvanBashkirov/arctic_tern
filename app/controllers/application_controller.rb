@@ -17,20 +17,4 @@ class ApplicationController < ActionController::Base
 
 
 
-  class Amount
-    @default = 1500
-    class << self
-      attr_accessor :default
-    end
-  end
-
-
-
-  PREMIUM_PLAN = Stripe::Plan.create(
-    name: 'Premium Plan',
-    id: 'premium-yearly',
-    interval: 'year',
-    currency: 'usd',
-    amount: Amount.default
-  )
 end
