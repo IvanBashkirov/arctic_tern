@@ -27,15 +27,20 @@ class WikisController < ApplicationController
   def create
     @wiki = Wiki.new(wiki_params)
     @wiki.user = current_user
-    puts wiki_params
 
-    respond_to do |format|
-      if @wiki.save
-        format.html { redirect_to @wiki, notice: 'Wiki was successfully created.' }
-        format.json { render :show, status: :created, location: @wiki }
-      else
-        format.html { render :new }
-        format.json { render json: @wiki.errors, status: :unprocessable_entity }
+
+    if @wiki.private and (not (current_user.premium? or current_user.admin?))
+      flash[:alert] = "You have to be a premium member to create private Wikis"
+      render :new
+    else
+      respond_to do |format|
+        if @wiki.save
+          format.html { redirect_to @wiki, notice: 'Wiki was successfully created.' }
+          format.json { render :show, status: :created, location: @wiki }
+        else
+          format.html { render :new }
+          format.json { render json: @wiki.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -43,6 +48,13 @@ class WikisController < ApplicationController
   # PATCH/PUT /wikis/1
   # PATCH/PUT /wikis/1.json
   def update
+
+    wiki_private = wiki_params[:private]
+
+    if wiki_private and (not (current_user.premium? or current_user.admin?))
+      flash[:alert] = "You have to be a premium member to create private Wikis"
+      render :new
+    else
     respond_to do |format|
       if @wiki.update(wiki_params)
         format.html { redirect_to @wiki, notice: 'Wiki was successfully updated.' }
@@ -52,6 +64,7 @@ class WikisController < ApplicationController
         format.json { render json: @wiki.errors, status: :unprocessable_entity }
       end
     end
+  end
   end
 
   # DELETE /wikis/1
@@ -80,7 +93,7 @@ class WikisController < ApplicationController
   end
 
   def new_wikis
-    @wikis = Wiki.all
+    @wikis = Wiki.all.visible_to(current_user)
   end
 
   def authorizeWiki
@@ -93,6 +106,6 @@ class WikisController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def wiki_params
-    params.require(:wiki).permit(:title, :body)
+    params.require(:wiki).permit(:title, :body, :private)
   end
 end

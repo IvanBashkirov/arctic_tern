@@ -2,6 +2,9 @@
 
 <%= @wiki.title %>
 <%= @wiki.body %>
+<% if @wiki.private %>
+Private
+<% end %>
 
 <% if policy(@wiki).edit? %>
 <%= link_to 'Edit', edit_wiki_path(@wiki) %> |

@@ -10,5 +10,5 @@
   data-description="<%= @stripe_btn_data[:description] %>"></script>
 <% end %>
 <% else %>
-<%= button_to "Downgrade", charges_switch_to_basic_path %>
+<%= button_to "Downgrade", charges_confirm_downgrade_path %>
 <% end %>

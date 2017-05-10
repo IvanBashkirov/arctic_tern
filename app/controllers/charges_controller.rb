@@ -26,11 +26,6 @@ class ChargesController < ApplicationController
 
 
   def switch_to_basic
-
-    if current_user.basic?
-      flash[:alert] = "You are already on a basic plan"
-      redirect_to change_subscription_path
-    end
     customer = Stripe::Customer.retrieve(current_user.customer_id)
     customer.sources.each{|card| card.delete} # delete all cards
     customer.save
@@ -40,8 +35,19 @@ class ChargesController < ApplicationController
 
     flash[:notice] = 'You succesfully downgraded your plan to "Basic"'
     current_user.basic!
+    current_user.wikis.each do |w|
+      w.private = false
+      w.save!
+    end
     redirect_to root_path # or wherever
 
+    end
+
+    def confirm_downgrade
+      if current_user.basic?
+        flash[:alert] = "You are already on a basic plan"
+        redirect_to change_subscription_path
+      end
     end
 
   def change_subscription

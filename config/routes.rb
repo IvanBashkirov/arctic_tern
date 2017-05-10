@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post 'charges/switch_to_premium'
   post 'charges/switch_to_basic'
   get 'charges/change_subscription'
+  post 'charges/confirm_downgrade'
   resources :wikis
 
   root 'welcome#index'
