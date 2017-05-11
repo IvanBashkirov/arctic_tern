@@ -42,6 +42,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'devise'
 # charging moneyz
 gem 'stripe'
+# markdown
+gem 'redcarpet'
 
 
 

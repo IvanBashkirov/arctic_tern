@@ -1,7 +1,7 @@
 <p id="notice"><%= notice %></p>
 
 <%= @wiki.title %>
-<%= @wiki.body %>
+<%= markdown(@wiki.body) %>
 <% if @wiki.private %>
 Private
 <% end %>
