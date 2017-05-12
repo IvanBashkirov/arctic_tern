@@ -15,7 +15,7 @@ class ApplicationPolicy
   end
 
   def create?
-    @user.present? && (@user.admin? || @user.premium?)
+    user.present?
   end
 
   def new?
