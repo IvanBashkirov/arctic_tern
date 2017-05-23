@@ -30,17 +30,8 @@ class WikisController < ApplicationController
 
     emails = params[:collaborator_emails].split(" ")
     emails.each do |email|
-      user = User.find_by(email: email)
-      if user == @wiki.user
-        flash[:alert] = "An owner of a wiki can not also be a collaborator"
-        render :edit
-        return
-      elsif @wiki.collaborators.include?(user)
-        flash[:alert] = "The user is already a collaborator"
-        render :edit
-        return
-      elsif user.nil?
-        flash[:alert] = "One or more emails you provided do not match our records. Please try again."
+      user = get_valid_collab_user_by_email email
+      if user.nil?
         render :edit
         return
       end
@@ -51,7 +42,6 @@ class WikisController < ApplicationController
         return
       end
     end
-
 
     if @wiki.private and (not (current_user.premium? or current_user.admin?))
       flash[:alert] = "You have to be a premium member to create private Wikis"
@@ -76,17 +66,8 @@ class WikisController < ApplicationController
     wiki_private = wiki_params[:private]
     emails = params[:collaborator_emails].split(" ")
     emails.each do |email|
-      user = User.find_by(email: email)
-      if user == @wiki.user
-        flash[:alert] = "An owner of a wiki can not also be a collaborator"
-        render :edit
-        return
-      elsif @wiki.collaborators.include?(user)
-        flash[:alert] = "The user is already a collaborator"
-        render :edit
-        return
-      elsif user.nil?
-        flash[:alert] = "One or more emails you provided do not match our records. Please try again."
+      user = get_valid_collab_user_by_email email
+      if user.nil?
         render :edit
         return
       end
@@ -97,6 +78,8 @@ class WikisController < ApplicationController
         return
       end
     end
+
+
     if wiki_private and (not (current_user.premium? or current_user.admin?))
       flash[:alert] = "You have to be a premium member to make wikis private"
       render :edit
@@ -128,6 +111,23 @@ class WikisController < ApplicationController
   end
 
   private
+
+  def get_valid_collab_user_by_email(email)
+      user = User.find_by(email: email)
+      result = nil
+      if user == @wiki.user
+        flash[:alert] = "An owner of a wiki can not also be a collaborator"
+      elsif @wiki.collaborators.include?(user)
+        flash[:alert] = "The user is already a collaborator"
+      elsif user.nil?
+        flash[:alert] = "One or more emails you provided do not match our records. Please try again."
+      else
+        result = user
+      end
+      return result
+    end
+  end
+
 
   # Use callbacks to share common setup or constraints between actions.
   def set_wiki
